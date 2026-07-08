@@ -3,27 +3,24 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="一个根据访问者所在时区实时显示当地时间的个人网站，包含数字钟、模拟钟、手表和日晷。" />
+  <meta name="description" content="区域信息来自浏览器时区，不请求定位权限，也不会上传访问者数据。" />
   <title>访问者时间 | huol20</title>
   <style>
     :root {
       color-scheme: dark;
       --bg: #08111f;
-      --panel: rgba(255, 255, 255, 0.08);
       --text: #eef5ff;
       --muted: #9fb1c7;
-      --line: rgba(255, 255, 255, 0.16);
+      --line: rgba(255,255,255,.16);
       --accent: #74d3ff;
-      --accent-2: #a78bfa;
+      --accent2: #a78bfa;
       --warm: #ffd166;
       --danger: #ff6b6b;
-      --shadow: rgba(0, 0, 0, 0.28);
+      --shadow: rgba(0,0,0,.28);
       --radius: 26px;
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
@@ -31,8 +28,8 @@
       font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
       color: var(--text);
       background:
-        radial-gradient(circle at 12% 10%, rgba(116, 211, 255, 0.23), transparent 30%),
-        radial-gradient(circle at 86% 8%, rgba(167, 139, 250, 0.2), transparent 28%),
+        radial-gradient(circle at 12% 10%, rgba(116,211,255,.23), transparent 30%),
+        radial-gradient(circle at 86% 8%, rgba(167,139,250,.2), transparent 28%),
         linear-gradient(135deg, #08111f 0%, #10172a 50%, #172034 100%);
       overflow-x: hidden;
     }
@@ -43,10 +40,10 @@
       inset: 0;
       pointer-events: none;
       background-image:
-        linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+        linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
       background-size: 44px 44px;
-      mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.7), transparent 78%);
+      mask-image: linear-gradient(to bottom, rgba(0,0,0,.7), transparent 78%);
     }
 
     .language-switcher {
@@ -60,9 +57,9 @@
       padding: 10px;
       border: 1px solid var(--line);
       border-radius: 999px;
-      background: rgba(8, 17, 31, 0.72);
+      background: rgba(8,17,31,.72);
       backdrop-filter: blur(18px);
-      box-shadow: 0 18px 42px rgba(0, 0, 0, 0.24);
+      box-shadow: 0 18px 42px rgba(0,0,0,.24);
     }
 
     .language-label {
@@ -77,19 +74,19 @@
       border-radius: 999px;
       padding: 8px 12px;
       color: var(--muted);
-      background: rgba(255, 255, 255, 0.06);
+      background: rgba(255,255,255,.06);
       cursor: pointer;
       font-size: 13px;
       font-weight: 700;
-      transition: 0.2s ease;
+      transition: .2s ease;
     }
 
     .lang-btn:hover,
     .lang-btn.active {
       color: var(--text);
-      border-color: rgba(116, 211, 255, 0.55);
-      background: rgba(116, 211, 255, 0.16);
-      box-shadow: 0 0 22px rgba(116, 211, 255, 0.16);
+      border-color: rgba(116,211,255,.55);
+      background: rgba(116,211,255,.16);
+      box-shadow: 0 0 22px rgba(116,211,255,.16);
     }
 
     .page {
@@ -101,7 +98,7 @@
 
     .hero {
       display: grid;
-      grid-template-columns: 1.25fr 0.75fr;
+      grid-template-columns: 1.25fr .75fr;
       gap: 24px;
       align-items: stretch;
       margin-bottom: 24px;
@@ -109,7 +106,7 @@
 
     .glass {
       border: 1px solid var(--line);
-      background: linear-gradient(145deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.045));
+      background: linear-gradient(145deg, rgba(255,255,255,.1), rgba(255,255,255,.045));
       box-shadow: 0 24px 70px var(--shadow);
       backdrop-filter: blur(18px);
       border-radius: var(--radius);
@@ -132,7 +129,7 @@
       border: 1px solid var(--line);
       border-radius: 999px;
       color: var(--muted);
-      background: rgba(255, 255, 255, 0.05);
+      background: rgba(255,255,255,.05);
       font-size: 14px;
     }
 
@@ -141,32 +138,25 @@
       height: 9px;
       border-radius: 50%;
       background: var(--accent);
-      box-shadow: 0 0 0 0 rgba(116, 211, 255, 0.65);
+      box-shadow: 0 0 0 0 rgba(116,211,255,.65);
       animation: pulse 1.8s infinite;
     }
 
     @keyframes pulse {
-      70% { box-shadow: 0 0 0 12px rgba(116, 211, 255, 0); }
-      100% { box-shadow: 0 0 0 0 rgba(116, 211, 255, 0); }
+      70% { box-shadow: 0 0 0 12px rgba(116,211,255,0); }
+      100% { box-shadow: 0 0 0 0 rgba(116,211,255,0); }
     }
 
     h1 {
-      margin: 28px 0 14px;
-      font-size: clamp(38px, 7vw, 88px);
-      line-height: 0.95;
-      letter-spacing: -0.06em;
-    }
-
-    .lead {
-      max-width: 760px;
-      margin: 0;
-      color: var(--muted);
-      font-size: clamp(16px, 2vw, 20px);
-      line-height: 1.8;
+      margin: 28px 0 0;
+      max-width: 920px;
+      font-size: clamp(32px, 5vw, 66px);
+      line-height: 1.12;
+      letter-spacing: -0.055em;
     }
 
     .privacy-note {
-      margin-top: 22px;
+      margin-top: 28px;
       color: #c8d7ea;
       font-size: 14px;
       line-height: 1.7;
@@ -174,16 +164,16 @@
 
     .digital-card {
       padding: 28px;
+      min-height: 280px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      min-height: 280px;
     }
 
     .digital-label {
       color: var(--muted);
       font-size: 14px;
-      letter-spacing: 0.12em;
+      letter-spacing: .12em;
       text-transform: uppercase;
     }
 
@@ -191,8 +181,8 @@
       margin: 22px 0 8px;
       font-variant-numeric: tabular-nums;
       font-size: clamp(46px, 7vw, 78px);
-      line-height: 0.95;
-      letter-spacing: -0.055em;
+      line-height: .95;
+      letter-spacing: -.055em;
     }
 
     .digital-date {
@@ -212,7 +202,7 @@
       padding: 13px 14px;
       border: 1px solid var(--line);
       border-radius: 18px;
-      background: rgba(255, 255, 255, 0.055);
+      background: rgba(255,255,255,.055);
       overflow: hidden;
     }
 
@@ -258,7 +248,7 @@
     .card-title h2 {
       margin: 0;
       font-size: 22px;
-      letter-spacing: -0.02em;
+      letter-spacing: -.02em;
     }
 
     .card-title p {
@@ -275,7 +265,7 @@
       padding: 6px 10px;
       color: var(--muted);
       font-size: 12px;
-      background: rgba(255, 255, 255, 0.05);
+      background: rgba(255,255,255,.05);
       white-space: nowrap;
     }
 
@@ -290,31 +280,17 @@
     .analog-clock {
       width: min(270px, 78vw);
       height: auto;
-      filter: drop-shadow(0 20px 34px rgba(0, 0, 0, 0.32));
+      filter: drop-shadow(0 20px 34px rgba(0,0,0,.32));
     }
 
     .hand {
       transform-origin: 100px 100px;
-      transition: transform 0.14s linear;
+      transition: transform .14s linear;
     }
 
-    .second-hand {
-      stroke: var(--danger);
-      stroke-width: 1.5;
-      stroke-linecap: round;
-    }
-
-    .minute-hand {
-      stroke: #eef5ff;
-      stroke-width: 4.2;
-      stroke-linecap: round;
-    }
-
-    .hour-hand {
-      stroke: #eef5ff;
-      stroke-width: 6.8;
-      stroke-linecap: round;
-    }
+    .second-hand { stroke: var(--danger); stroke-width: 1.5; stroke-linecap: round; }
+    .minute-hand { stroke: #eef5ff; stroke-width: 4.2; stroke-linecap: round; }
+    .hour-hand { stroke: #eef5ff; stroke-width: 6.8; stroke-linecap: round; }
 
     .watch {
       width: 210px;
@@ -332,10 +308,10 @@
       transform: translateX(-50%);
       border-radius: 40px;
       background:
-        linear-gradient(90deg, rgba(255,255,255,0.08), rgba(255,255,255,0.18), rgba(255,255,255,0.06)),
+        linear-gradient(90deg, rgba(255,255,255,.08), rgba(255,255,255,.18), rgba(255,255,255,.06)),
         linear-gradient(#202d47, #0d1528);
-      border: 1px solid rgba(255,255,255,0.13);
-      box-shadow: inset 0 0 30px rgba(0,0,0,0.35);
+      border: 1px solid rgba(255,255,255,.13);
+      box-shadow: inset 0 0 30px rgba(0,0,0,.35);
     }
 
     .strap::before,
@@ -347,10 +323,8 @@
       height: 12px;
       transform: translateX(-50%);
       border-radius: 999px;
-      background: rgba(255,255,255,0.18);
-      box-shadow:
-        0 30px 0 rgba(255,255,255,0.12),
-        0 60px 0 rgba(255,255,255,0.09);
+      background: rgba(255,255,255,.18);
+      box-shadow: 0 30px 0 rgba(255,255,255,.12), 0 60px 0 rgba(255,255,255,.09);
     }
 
     .strap::before { top: 28px; }
@@ -365,12 +339,10 @@
       display: grid;
       place-items: center;
       background:
-        radial-gradient(circle at 50% 48%, rgba(116, 211, 255, 0.16), transparent 38%),
+        radial-gradient(circle at 50% 48%, rgba(116,211,255,.16), transparent 38%),
         linear-gradient(145deg, #111a2c, #060b14);
-      border: 8px solid rgba(255, 255, 255, 0.16);
-      box-shadow:
-        inset 0 0 32px rgba(0, 0, 0, 0.5),
-        0 22px 42px rgba(0,0,0,0.35);
+      border: 8px solid rgba(255,255,255,.16);
+      box-shadow: inset 0 0 32px rgba(0,0,0,.5), 0 22px 42px rgba(0,0,0,.35);
     }
 
     .watch-face::before {
@@ -378,7 +350,7 @@
       position: absolute;
       inset: 13px;
       border-radius: 50%;
-      border: 1px dashed rgba(255,255,255,0.22);
+      border: 1px dashed rgba(255,255,255,.22);
     }
 
     .watch-digital {
@@ -386,11 +358,11 @@
       bottom: 38px;
       padding: 4px 8px;
       border-radius: 8px;
-      background: rgba(0,0,0,0.34);
+      background: rgba(0,0,0,.34);
       color: var(--accent);
       font-size: 15px;
       font-variant-numeric: tabular-nums;
-      letter-spacing: 0.03em;
+      letter-spacing: .03em;
     }
 
     .watch-hand {
@@ -399,37 +371,20 @@
       bottom: 50%;
       transform-origin: 50% 100%;
       border-radius: 999px;
-      transition: transform 0.14s linear;
+      transition: transform .14s linear;
     }
 
-    .watch-hour {
-      width: 6px;
-      height: 43px;
-      margin-left: -3px;
-      background: #eef5ff;
-    }
-
-    .watch-minute {
-      width: 4px;
-      height: 58px;
-      margin-left: -2px;
-      background: #dbe8f8;
-    }
-
-    .watch-second {
-      width: 2px;
-      height: 67px;
-      margin-left: -1px;
-      background: var(--danger);
-    }
+    .watch-hour { width: 6px; height: 43px; margin-left: -3px; background: #eef5ff; }
+    .watch-minute { width: 4px; height: 58px; margin-left: -2px; background: #dbe8f8; }
+    .watch-second { width: 2px; height: 67px; margin-left: -1px; background: var(--danger); }
 
     .watch-pin {
+      position: absolute;
       width: 14px;
       height: 14px;
       border-radius: 50%;
-      position: absolute;
       background: var(--accent);
-      box-shadow: 0 0 18px rgba(116,211,255,0.65);
+      box-shadow: 0 0 18px rgba(116,211,255,.65);
     }
 
     .sundial {
@@ -439,12 +394,10 @@
       position: relative;
       border-radius: 50%;
       background:
-        radial-gradient(circle at 50% 58%, rgba(255, 209, 102, 0.26), transparent 30%),
-        conic-gradient(from -90deg, rgba(255,209,102,0.22), rgba(116,211,255,0.08), rgba(167,139,250,0.16), rgba(255,209,102,0.22));
-      border: 1px solid rgba(255,255,255,0.18);
-      box-shadow:
-        inset 0 0 44px rgba(0,0,0,0.25),
-        0 22px 42px rgba(0,0,0,0.32);
+        radial-gradient(circle at 50% 58%, rgba(255,209,102,.26), transparent 30%),
+        conic-gradient(from -90deg, rgba(255,209,102,.22), rgba(116,211,255,.08), rgba(167,139,250,.16), rgba(255,209,102,.22));
+      border: 1px solid rgba(255,255,255,.18);
+      box-shadow: inset 0 0 44px rgba(0,0,0,.25), 0 22px 42px rgba(0,0,0,.32);
       overflow: hidden;
     }
 
@@ -453,7 +406,7 @@
       position: absolute;
       inset: 22px;
       border-radius: 50%;
-      border: 1px dashed rgba(255,255,255,0.18);
+      border: 1px dashed rgba(255,255,255,.18);
     }
 
     .sun-track {
@@ -462,7 +415,7 @@
       right: 12%;
       top: 18%;
       height: 44%;
-      border-top: 2px dashed rgba(255,255,255,0.24);
+      border-top: 2px dashed rgba(255,255,255,.24);
       border-radius: 50% 50% 0 0;
     }
 
@@ -475,8 +428,8 @@
       transform: translate(-50%, -50%);
       border-left: 17px solid transparent;
       border-right: 17px solid transparent;
-      border-bottom: 108px solid rgba(238, 245, 255, 0.92);
-      filter: drop-shadow(0 10px 18px rgba(0,0,0,0.25));
+      border-bottom: 108px solid rgba(238,245,255,.92);
+      filter: drop-shadow(0 10px 18px rgba(0,0,0,.25));
       transform-origin: 50% 100%;
     }
 
@@ -489,9 +442,9 @@
       border-radius: 999px;
       transform-origin: 0 50%;
       transform: rotate(0deg);
-      background: linear-gradient(90deg, rgba(0,0,0,0.52), rgba(0,0,0,0));
+      background: linear-gradient(90deg, rgba(0,0,0,.52), rgba(0,0,0,0));
       filter: blur(1px);
-      transition: transform 0.4s ease, width 0.4s ease, opacity 0.4s ease;
+      transition: transform .4s ease, width .4s ease, opacity .4s ease;
     }
 
     .sun-dot {
@@ -502,17 +455,17 @@
       top: 21%;
       border-radius: 50%;
       background: var(--warm);
-      box-shadow: 0 0 34px rgba(255, 209, 102, 0.8);
+      box-shadow: 0 0 34px rgba(255,209,102,.8);
       transform: translate(-50%, -50%);
-      transition: left 0.4s ease, top 0.4s ease, opacity 0.4s ease;
+      transition: left .4s ease, top .4s ease, opacity .4s ease;
     }
 
     .dial-mark {
       position: absolute;
-      color: rgba(255,255,255,0.72);
+      color: rgba(255,255,255,.72);
       font-size: 13px;
       font-weight: 700;
-      letter-spacing: 0.04em;
+      letter-spacing: .04em;
     }
 
     .m6 { left: 28px; top: 55%; }
@@ -539,24 +492,12 @@
       font-size: 14px;
     }
 
-    .footer a {
-      color: var(--accent);
-      text-decoration: none;
-    }
-
-    .footer a:hover {
-      text-decoration: underline;
-    }
+    .footer a { color: var(--accent); text-decoration: none; }
+    .footer a:hover { text-decoration: underline; }
 
     @media (max-width: 980px) {
-      .hero,
-      .grid {
-        grid-template-columns: 1fr;
-      }
-
-      .clock-card {
-        min-height: 390px;
-      }
+      .hero, .grid { grid-template-columns: 1fr; }
+      .clock-card { min-height: 390px; }
     }
 
     @media (max-width: 620px) {
@@ -568,27 +509,10 @@
         border-radius: 22px;
         flex-wrap: wrap;
       }
-
-      .page {
-        width: min(100% - 20px, 1180px);
-        padding: 112px 0 34px;
-      }
-
-      .intro,
-      .digital-card,
-      .clock-card,
-      .footer {
-        padding: 20px;
-        border-radius: 22px;
-      }
-
-      .zone-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .footer {
-        display: block;
-      }
+      .page { width: min(100% - 20px, 1180px); padding: 112px 0 34px; }
+      .intro, .digital-card, .clock-card, .footer { padding: 20px; border-radius: 22px; }
+      .zone-grid { grid-template-columns: 1fr; }
+      .footer { display: block; }
     }
   </style>
 </head>
@@ -605,14 +529,9 @@
       <div class="intro glass">
         <div>
           <div class="badge"><span class="pulse"></span><span data-i18n="badge">实时访问者时钟</span></div>
-          <h1 data-i18n="heroTitle">此刻，你所在区域的时间</h1>
-          <p class="lead" data-i18n="heroLead">
-            页面会根据浏览器暴露的时区自动推断访问者所在区域，并同步展示数字钟、钟表、手表与日晷四种时间视图。
-          </p>
+          <h1 data-i18n="heroTitle">时间像一条不知疲倦的河流，把少年的影子冲走了，可那个梦还在河底躺着，磨成了石头，硌着脚，却也没人舍得扔。</h1>
         </div>
-        <div class="privacy-note" data-i18n="privacyNote">
-          说明：区域信息来自浏览器时区，例如 Asia/Shanghai、America/Los_Angeles；不请求定位权限，也不会上传你的数据。
-        </div>
+        <div class="privacy-note" data-i18n="privacyNote">说明：区域信息来自浏览器时区，不请求定位权限，也不会上传你的数据</div>
       </div>
 
       <aside class="digital-card glass" aria-label="Digital clock">
@@ -622,45 +541,22 @@
           <div class="digital-date" id="digitalDate" data-i18n="loadingTime">正在读取访问者时间...</div>
         </div>
         <div class="zone-grid">
-          <div class="zone-item">
-            <span data-i18n="zoneLabel">所在时区</span>
-            <strong id="zoneName">--</strong>
-          </div>
-          <div class="zone-item">
-            <span data-i18n="regionLabel">推断区域</span>
-            <strong id="regionName">--</strong>
-          </div>
-          <div class="zone-item">
-            <span data-i18n="utcLabel">UTC 偏移</span>
-            <strong id="utcOffset">--</strong>
-          </div>
-          <div class="zone-item">
-            <span data-i18n="localeLabel">浏览器语言</span>
-            <strong id="localeName">--</strong>
-          </div>
+          <div class="zone-item"><span data-i18n="zoneLabel">所在时区</span><strong id="zoneName">--</strong></div>
+          <div class="zone-item"><span data-i18n="regionLabel">推断区域</span><strong id="regionName">--</strong></div>
+          <div class="zone-item"><span data-i18n="utcLabel">UTC 偏移</span><strong id="utcOffset">--</strong></div>
+          <div class="zone-item"><span data-i18n="localeLabel">浏览器语言</span><strong id="localeName">--</strong></div>
         </div>
       </aside>
     </section>
 
     <section class="grid">
       <article class="clock-card glass">
-        <div class="card-title">
-          <div>
-            <h2 data-i18n="analogTitle">钟表</h2>
-            <p data-i18n="analogDesc">传统模拟钟，时针、分针、秒针实时转动。</p>
-          </div>
-          <span class="tag" data-i18n="analogTag">模拟钟</span>
-        </div>
+        <div class="card-title"><div><h2 data-i18n="analogTitle">钟表</h2><p data-i18n="analogDesc">传统模拟钟，时针、分针、秒针实时转动。</p></div><span class="tag" data-i18n="analogTag">模拟钟</span></div>
         <div class="analog-wrap">
           <svg class="analog-clock" viewBox="0 0 200 200" role="img" aria-label="Analog clock">
-            <defs>
-              <radialGradient id="clockFace" cx="50%" cy="45%" r="64%">
-                <stop offset="0%" stop-color="#1a2a46" />
-                <stop offset="100%" stop-color="#07101d" />
-              </radialGradient>
-            </defs>
-            <circle cx="100" cy="100" r="94" fill="url(#clockFace)" stroke="rgba(255,255,255,0.18)" stroke-width="3" />
-            <circle cx="100" cy="100" r="78" fill="none" stroke="rgba(255,255,255,0.09)" stroke-width="1" />
+            <defs><radialGradient id="clockFace" cx="50%" cy="45%" r="64%"><stop offset="0%" stop-color="#1a2a46" /><stop offset="100%" stop-color="#07101d" /></radialGradient></defs>
+            <circle cx="100" cy="100" r="94" fill="url(#clockFace)" stroke="rgba(255,255,255,.18)" stroke-width="3" />
+            <circle cx="100" cy="100" r="78" fill="none" stroke="rgba(255,255,255,.09)" stroke-width="1" />
             <g id="ticks"></g>
             <line id="hourHand" class="hand hour-hand" x1="100" y1="100" x2="100" y2="58" />
             <line id="minuteHand" class="hand minute-hand" x1="100" y1="100" x2="100" y2="38" />
@@ -669,66 +565,23 @@
             <circle cx="100" cy="100" r="3" fill="#08111f" />
           </svg>
         </div>
-        <div class="status-row">
-          <div id="analogStatus" data-i18n="analogLoading">正在同步本地时间...</div>
-        </div>
+        <div class="status-row"><div id="analogStatus" data-i18n="analogLoading">正在同步本地时间...</div></div>
       </article>
 
       <article class="clock-card glass">
-        <div class="card-title">
-          <div>
-            <h2 data-i18n="watchTitle">手表</h2>
-            <p data-i18n="watchDesc">腕表风格时间组件，同时显示小型指针和电子时间。</p>
-          </div>
-          <span class="tag" data-i18n="watchTag">手表</span>
-        </div>
-        <div class="watch-area">
-          <div class="watch" aria-label="Watch">
-            <div class="strap"></div>
-            <div class="watch-face">
-              <div id="watchHour" class="watch-hand watch-hour"></div>
-              <div id="watchMinute" class="watch-hand watch-minute"></div>
-              <div id="watchSecond" class="watch-hand watch-second"></div>
-              <div class="watch-pin"></div>
-              <div id="watchDigital" class="watch-digital">--:--</div>
-            </div>
-          </div>
-        </div>
-        <div class="status-row">
-          <div id="watchStatus" data-i18n="watchLoading">腕表时间读取中...</div>
-        </div>
+        <div class="card-title"><div><h2 data-i18n="watchTitle">手表</h2><p data-i18n="watchDesc">腕表风格时间组件，同时显示小型指针和电子时间。</p></div><span class="tag" data-i18n="watchTag">手表</span></div>
+        <div class="watch-area"><div class="watch" aria-label="Watch"><div class="strap"></div><div class="watch-face"><div id="watchHour" class="watch-hand watch-hour"></div><div id="watchMinute" class="watch-hand watch-minute"></div><div id="watchSecond" class="watch-hand watch-second"></div><div class="watch-pin"></div><div id="watchDigital" class="watch-digital">--:--</div></div></div></div>
+        <div class="status-row"><div id="watchStatus" data-i18n="watchLoading">腕表时间读取中...</div></div>
       </article>
 
       <article class="clock-card glass">
-        <div class="card-title">
-          <div>
-            <h2 data-i18n="sundialTitle">日晷</h2>
-            <p data-i18n="sundialDesc">根据访问者当地时间生成太阳位置与影子方向的视觉化近似。</p>
-          </div>
-          <span class="tag" data-i18n="sundialTag">日晷</span>
-        </div>
-        <div class="sundial-area">
-          <div class="sundial" aria-label="Sundial">
-            <div class="sun-track"></div>
-            <div id="sunDot" class="sun-dot"></div>
-            <div id="dialShadow" class="dial-shadow"></div>
-            <div class="gnomon"></div>
-            <div class="dial-mark m6">6</div>
-            <div class="dial-mark m12">12</div>
-            <div class="dial-mark m18">18</div>
-          </div>
-        </div>
-        <div class="status-row">
-          <div id="sunStatus" data-i18n="sunLoading">正在计算日晷影子...</div>
-          <div data-i18n="sundialNote">注：这是基于本地时间的 UI 近似，不是精确天文日晷。</div>
-        </div>
+        <div class="card-title"><div><h2 data-i18n="sundialTitle">日晷</h2><p data-i18n="sundialDesc">根据访问者当地时间生成太阳位置与影子方向的视觉化近似。</p></div><span class="tag" data-i18n="sundialTag">日晷</span></div>
+        <div class="sundial-area"><div class="sundial" aria-label="Sundial"><div class="sun-track"></div><div id="sunDot" class="sun-dot"></div><div id="dialShadow" class="dial-shadow"></div><div class="gnomon"></div><div class="dial-mark m6">6</div><div class="dial-mark m12">12</div><div class="dial-mark m18">18</div></div></div>
+        <div class="status-row"><div id="sunStatus" data-i18n="sunLoading">正在计算日晷影子...</div><div data-i18n="sundialNote">注：这是基于本地时间的 UI 近似，不是精确天文日晷。</div></div>
       </article>
     </section>
 
-    <footer class="footer glass">
-      <div data-i18n="footerLeft">为 huol20.github.io 构建 · 纯 HTML/CSS/JavaScript</div>
-      <div><a href="https://github.com/huol20/huol20.github.io" data-i18n="viewRepo">查看仓库</a></div>
-    </footer>
+    <footer class="footer glass"><div data-i18n="footerLeft">为 huol20.github.io 构建 · 纯 HTML/CSS/JavaScript</div><div><a href="https://github.com/huol20/huol20.github.io" data-i18n="viewRepo">查看仓库</a></div></footer>
   </main>
 
   <script>
@@ -739,12 +592,11 @@
         htmlLang: "zh-CN",
         locale: "zh-CN",
         title: "访问者时间 | huol20",
-        description: "一个根据访问者所在时区实时显示当地时间的个人网站，包含数字钟、模拟钟、手表和日晷。",
+        description: "区域信息来自浏览器时区，不请求定位权限，也不会上传访问者数据。",
         languageLabel: "语言",
         badge: "实时访问者时钟",
-        heroTitle: "此刻，你所在区域的时间",
-        heroLead: "页面会根据浏览器暴露的时区自动推断访问者所在区域，并同步展示数字钟、钟表、手表与日晷四种时间视图。",
-        privacyNote: "说明：区域信息来自浏览器时区，例如 Asia/Shanghai、America/Los_Angeles；不请求定位权限，也不会上传你的数据。",
+        heroTitle: "时间像一条不知疲倦的河流，把少年的影子冲走了，可那个梦还在河底躺着，磨成了石头，硌着脚，却也没人舍得扔。",
+        privacyNote: "说明：区域信息来自浏览器时区，不请求定位权限，也不会上传你的数据",
         digitalLabel: "数字钟",
         loadingTime: "正在读取访问者时间...",
         zoneLabel: "所在时区",
@@ -777,12 +629,11 @@
         htmlLang: "en",
         locale: "en-US",
         title: "Visitor Time | huol20",
-        description: "A real-time visitor clock based on the visitor's browser time zone, featuring a digital clock, analog clock, watch, and sundial.",
+        description: "Region information comes from the browser time zone. No location permission is requested, and no visitor data is uploaded.",
         languageLabel: "Language",
         badge: "Real-time visitor clock",
-        heroTitle: "The time in your region, right now",
-        heroLead: "This page infers the visitor's region from the browser time zone and shows four synchronized views: a digital clock, an analog clock, a watch, and a sundial.",
-        privacyNote: "Note: the region comes from the browser time zone, such as Asia/Shanghai or America/Los_Angeles. No location permission is requested, and no visitor data is uploaded.",
+        heroTitle: "Time is a tireless river, washing away the shadow of youth; yet the dream still lies at the riverbed, worn into stone, hurting the feet, and still no one can bear to throw it away.",
+        privacyNote: "Note: region information comes from the browser time zone. No location permission is requested, and no visitor data is uploaded.",
         digitalLabel: "Digital Clock",
         loadingTime: "Reading visitor time...",
         zoneLabel: "Time zone",
@@ -815,12 +666,11 @@
         htmlLang: "ru",
         locale: "ru-RU",
         title: "Время посетителя | huol20",
-        description: "Страница показывает местное время посетителя по часовому поясу браузера: цифровые часы, аналоговые часы, наручные часы и солнечные часы.",
+        description: "Информация о регионе берётся из часового пояса браузера. Геолокация не запрашивается, данные посетителя не отправляются.",
         languageLabel: "Язык",
         badge: "Часы посетителя в реальном времени",
-        heroTitle: "Время в вашем регионе прямо сейчас",
-        heroLead: "Страница определяет регион по часовому поясу браузера и синхронно показывает четыре вида времени: цифровые часы, аналоговые часы, наручные часы и солнечные часы.",
-        privacyNote: "Примечание: регион берётся из часового пояса браузера, например Asia/Shanghai или America/Los_Angeles. Геолокация не запрашивается, данные посетителя не отправляются.",
+        heroTitle: "Время похоже на неутомимую реку: оно уносит тень юности, но мечта всё ещё лежит на дне, стёртая в камень, ранит ступни, и всё же никто не решается её выбросить.",
+        privacyNote: "Примечание: информация о регионе берётся из часового пояса браузера. Геолокация не запрашивается, данные посетителя не отправляются.",
         digitalLabel: "Цифровые часы",
         loadingTime: "Чтение времени посетителя...",
         zoneLabel: "Часовой пояс",
@@ -855,17 +705,9 @@
     const browserLocale = navigator.languages?.[0] || navigator.language || "zh-CN";
     let currentLang = localStorage.getItem("preferredLanguage") || "zh";
 
-    function t(key) {
-      return translations[currentLang]?.[key] || translations.zh[key] || key;
-    }
-
-    function pad(num) {
-      return String(num).padStart(2, "0");
-    }
-
-    function interpolate(template, values) {
-      return template.replace(/\{(\w+)\}/g, (_, key) => values[key] ?? "");
-    }
+    function t(key) { return translations[currentLang]?.[key] || translations.zh[key] || key; }
+    function pad(num) { return String(num).padStart(2, "0"); }
+    function interpolate(template, values) { return template.replace(/\{(\w+)\}/g, (_, key) => values[key] ?? ""); }
 
     function buildTicks() {
       const ticks = $("ticks");
@@ -877,17 +719,12 @@
         const isHour = i % 5 === 0;
         const inner = isHour ? 82 : 88;
         const outer = 92;
-        const x1 = 100 + Math.cos(angle) * inner;
-        const y1 = 100 + Math.sin(angle) * inner;
-        const x2 = 100 + Math.cos(angle) * outer;
-        const y2 = 100 + Math.sin(angle) * outer;
-
         const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
-        line.setAttribute("x1", x1.toFixed(2));
-        line.setAttribute("y1", y1.toFixed(2));
-        line.setAttribute("x2", x2.toFixed(2));
-        line.setAttribute("y2", y2.toFixed(2));
-        line.setAttribute("stroke", isHour ? "rgba(255,255,255,0.76)" : "rgba(255,255,255,0.25)");
+        line.setAttribute("x1", (100 + Math.cos(angle) * inner).toFixed(2));
+        line.setAttribute("y1", (100 + Math.sin(angle) * inner).toFixed(2));
+        line.setAttribute("x2", (100 + Math.cos(angle) * outer).toFixed(2));
+        line.setAttribute("y2", (100 + Math.sin(angle) * outer).toFixed(2));
+        line.setAttribute("stroke", isHour ? "rgba(255,255,255,.76)" : "rgba(255,255,255,.25)");
         line.setAttribute("stroke-width", isHour ? "2" : "1");
         line.setAttribute("stroke-linecap", "round");
         ticks.appendChild(line);
@@ -895,16 +732,14 @@
 
       numbers.forEach((num, i) => {
         const angle = (i * 30 - 90) * Math.PI / 180;
-        const x = 100 + Math.cos(angle) * 68;
-        const y = 100 + Math.sin(angle) * 68 + 4;
         const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
         text.textContent = num;
-        text.setAttribute("x", x.toFixed(2));
-        text.setAttribute("y", y.toFixed(2));
+        text.setAttribute("x", (100 + Math.cos(angle) * 68).toFixed(2));
+        text.setAttribute("y", (100 + Math.sin(angle) * 68 + 4).toFixed(2));
         text.setAttribute("text-anchor", "middle");
         text.setAttribute("font-size", "13");
         text.setAttribute("font-weight", "700");
-        text.setAttribute("fill", "rgba(238,245,255,0.82)");
+        text.setAttribute("fill", "rgba(238,245,255,.82)");
         ticks.appendChild(text);
       });
     }
@@ -917,7 +752,6 @@
         minute: "2-digit",
         second: "2-digit"
       }).formatToParts(date);
-
       const map = Object.fromEntries(parts.filter(part => part.type !== "literal").map(part => [part.type, part.value]));
       return {
         hour: Number(map.hour === "24" ? 0 : map.hour),
@@ -929,10 +763,7 @@
 
     function getOffset(date) {
       try {
-        const parts = new Intl.DateTimeFormat("en-US", {
-          timeZone,
-          timeZoneName: "longOffset"
-        }).formatToParts(date);
+        const parts = new Intl.DateTimeFormat("en-US", { timeZone, timeZoneName: "longOffset" }).formatToParts(date);
         const offset = parts.find(part => part.type === "timeZoneName")?.value;
         return offset ? offset.replace("GMT", "UTC") : "UTC";
       } catch (error) {
@@ -967,10 +798,7 @@
         button.setAttribute("aria-pressed", String(isActive));
       });
 
-      if (shouldPersist) {
-        localStorage.setItem("preferredLanguage", currentLang);
-      }
-
+      if (shouldPersist) localStorage.setItem("preferredLanguage", currentLang);
       update();
     }
 
@@ -982,8 +810,8 @@
       const sunStatus = $("sunStatus");
 
       if (!isDay) {
-        sunDot.style.opacity = "0.22";
-        shadow.style.opacity = "0.16";
+        sunDot.style.opacity = ".22";
+        shadow.style.opacity = ".16";
         shadow.style.width = "92px";
         shadow.style.transform = "rotate(180deg)";
         sunStatus.textContent = t("sundialNight");
@@ -991,17 +819,12 @@
       }
 
       const progress = (decimalHour - 6) / 12;
-      const sunX = 14 + progress * 72;
-      const sunY = 58 - Math.sin(progress * Math.PI) * 42;
-      const shadowAngle = 205 + progress * 130;
-      const shadowLength = 92 - Math.sin(progress * Math.PI) * 44;
-
       sunDot.style.opacity = "1";
-      sunDot.style.left = `${sunX}%`;
-      sunDot.style.top = `${sunY}%`;
-      shadow.style.opacity = "0.72";
-      shadow.style.width = `${shadowLength}px`;
-      shadow.style.transform = `rotate(${shadowAngle}deg)`;
+      sunDot.style.left = `${14 + progress * 72}%`;
+      sunDot.style.top = `${58 - Math.sin(progress * Math.PI) * 42}%`;
+      shadow.style.opacity = ".72";
+      shadow.style.width = `${92 - Math.sin(progress * Math.PI) * 44}px`;
+      shadow.style.transform = `rotate(${205 + progress * 130}deg)`;
 
       const statusKey = decimalHour < 11 ? "sundialMorning" : decimalHour < 14 ? "sundialNoon" : "sundialAfternoon";
       sunStatus.textContent = t(statusKey);
@@ -1014,7 +837,6 @@
       const minuteDeg = (minute + second / 60) * 6;
       const hourDeg = ((hour % 12) + minute / 60 + second / 3600) * 30;
       const timeText = `${pad(hour)}:${pad(minute)}:${pad(second)}`;
-
       const dateText = new Intl.DateTimeFormat(t("locale"), {
         timeZone,
         weekday: "long",

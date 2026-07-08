@@ -4,13 +4,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="一个根据访问者所在时区实时显示当地时间的个人网站，包含数字钟、模拟钟、手表和日晷。" />
-  <title>Visitor Time | huol20</title>
+  <title>访问者时间 | huol20</title>
   <style>
     :root {
       color-scheme: dark;
       --bg: #08111f;
       --panel: rgba(255, 255, 255, 0.08);
-      --panel-strong: rgba(255, 255, 255, 0.13);
       --text: #eef5ff;
       --muted: #9fb1c7;
       --line: rgba(255, 255, 255, 0.16);
@@ -29,7 +28,7 @@
     body {
       margin: 0;
       min-height: 100vh;
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
       color: var(--text);
       background:
         radial-gradient(circle at 12% 10%, rgba(116, 211, 255, 0.23), transparent 30%),
@@ -50,11 +49,54 @@
       mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.7), transparent 78%);
     }
 
+    .language-switcher {
+      position: fixed;
+      left: 18px;
+      top: 18px;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(8, 17, 31, 0.72);
+      backdrop-filter: blur(18px);
+      box-shadow: 0 18px 42px rgba(0, 0, 0, 0.24);
+    }
+
+    .language-label {
+      padding: 0 6px 0 4px;
+      color: var(--muted);
+      font-size: 13px;
+      white-space: nowrap;
+    }
+
+    .lang-btn {
+      border: 1px solid transparent;
+      border-radius: 999px;
+      padding: 8px 12px;
+      color: var(--muted);
+      background: rgba(255, 255, 255, 0.06);
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 700;
+      transition: 0.2s ease;
+    }
+
+    .lang-btn:hover,
+    .lang-btn.active {
+      color: var(--text);
+      border-color: rgba(116, 211, 255, 0.55);
+      background: rgba(116, 211, 255, 0.16);
+      box-shadow: 0 0 22px rgba(116, 211, 255, 0.16);
+    }
+
     .page {
       position: relative;
       width: min(1180px, calc(100% - 32px));
       margin: 0 auto;
-      padding: 48px 0 60px;
+      padding: 92px 0 60px;
     }
 
     .hero {
@@ -127,6 +169,7 @@
       margin-top: 22px;
       color: #c8d7ea;
       font-size: 14px;
+      line-height: 1.7;
     }
 
     .digital-card {
@@ -233,9 +276,12 @@
       color: var(--muted);
       font-size: 12px;
       background: rgba(255, 255, 255, 0.05);
+      white-space: nowrap;
     }
 
-    .analog-wrap {
+    .analog-wrap,
+    .watch-area,
+    .sundial-area {
       display: grid;
       place-items: center;
       min-height: 285px;
@@ -268,12 +314,6 @@
       stroke: #eef5ff;
       stroke-width: 6.8;
       stroke-linecap: round;
-    }
-
-    .watch-area {
-      display: grid;
-      place-items: center;
-      min-height: 285px;
     }
 
     .watch {
@@ -392,12 +432,6 @@
       box-shadow: 0 0 18px rgba(116,211,255,0.65);
     }
 
-    .sundial-area {
-      min-height: 285px;
-      display: grid;
-      place-items: center;
-    }
-
     .sundial {
       width: 270px;
       max-width: 82vw;
@@ -447,11 +481,10 @@
     }
 
     .dial-shadow {
-      --shadowLen: 74px;
       position: absolute;
       left: 50%;
       top: 50%;
-      width: var(--shadowLen);
+      width: 74px;
       height: 16px;
       border-radius: 999px;
       transform-origin: 0 50%;
@@ -526,10 +559,19 @@
       }
     }
 
-    @media (max-width: 560px) {
+    @media (max-width: 620px) {
+      .language-switcher {
+        left: 10px;
+        right: 10px;
+        top: 10px;
+        justify-content: center;
+        border-radius: 22px;
+        flex-wrap: wrap;
+      }
+
       .page {
         width: min(100% - 20px, 1180px);
-        padding: 18px 0 34px;
+        padding: 112px 0 34px;
       }
 
       .intro,
@@ -551,39 +593,49 @@
   </style>
 </head>
 <body>
+  <nav class="language-switcher" aria-label="Language switcher">
+    <span class="language-label" data-i18n="languageLabel">语言</span>
+    <button class="lang-btn active" type="button" data-lang="zh" aria-pressed="true">中文</button>
+    <button class="lang-btn" type="button" data-lang="en" aria-pressed="false">English</button>
+    <button class="lang-btn" type="button" data-lang="ru" aria-pressed="false">Русский</button>
+  </nav>
+
   <main class="page">
     <section class="hero">
       <div class="intro glass">
         <div>
-          <div class="badge"><span class="pulse"></span> Real-time visitor clock</div>
-          <h1>时间在流逝</h1>
+          <div class="badge"><span class="pulse"></span><span data-i18n="badge">实时访问者时钟</span></div>
+          <h1 data-i18n="heroTitle">此刻，你所在区域的时间</h1>
+          <p class="lead" data-i18n="heroLead">
+            页面会根据浏览器暴露的时区自动推断访问者所在区域，并同步展示数字钟、钟表、手表与日晷四种时间视图。
+          </p>
         </div>
-        <div class="privacy-note">
-          说明：区域信息来自浏览器时区，不请求定位权限，也不会上传你的数据。
+        <div class="privacy-note" data-i18n="privacyNote">
+          说明：区域信息来自浏览器时区，例如 Asia/Shanghai、America/Los_Angeles；不请求定位权限，也不会上传你的数据。
         </div>
       </div>
 
-      <aside class="digital-card glass" aria-label="数字钟">
+      <aside class="digital-card glass" aria-label="Digital clock">
         <div>
-          <div class="digital-label">Digital Clock</div>
+          <div class="digital-label" data-i18n="digitalLabel">数字钟</div>
           <div class="digital-time" id="digitalTime">--:--:--</div>
-          <div class="digital-date" id="digitalDate">正在读取访问者时间...</div>
+          <div class="digital-date" id="digitalDate" data-i18n="loadingTime">正在读取访问者时间...</div>
         </div>
         <div class="zone-grid">
           <div class="zone-item">
-            <span>所在时区</span>
+            <span data-i18n="zoneLabel">所在时区</span>
             <strong id="zoneName">--</strong>
           </div>
           <div class="zone-item">
-            <span>推断区域</span>
+            <span data-i18n="regionLabel">推断区域</span>
             <strong id="regionName">--</strong>
           </div>
           <div class="zone-item">
-            <span>UTC 偏移</span>
+            <span data-i18n="utcLabel">UTC 偏移</span>
             <strong id="utcOffset">--</strong>
           </div>
           <div class="zone-item">
-            <span>浏览器语言</span>
+            <span data-i18n="localeLabel">浏览器语言</span>
             <strong id="localeName">--</strong>
           </div>
         </div>
@@ -594,13 +646,13 @@
       <article class="clock-card glass">
         <div class="card-title">
           <div>
-            <h2>钟表</h2>
-            <p>传统模拟钟，时针、分针、秒针实时转动。</p>
+            <h2 data-i18n="analogTitle">钟表</h2>
+            <p data-i18n="analogDesc">传统模拟钟，时针、分针、秒针实时转动。</p>
           </div>
-          <span class="tag">Analog</span>
+          <span class="tag" data-i18n="analogTag">模拟钟</span>
         </div>
         <div class="analog-wrap">
-          <svg class="analog-clock" viewBox="0 0 200 200" role="img" aria-label="模拟钟表">
+          <svg class="analog-clock" viewBox="0 0 200 200" role="img" aria-label="Analog clock">
             <defs>
               <radialGradient id="clockFace" cx="50%" cy="45%" r="64%">
                 <stop offset="0%" stop-color="#1a2a46" />
@@ -618,20 +670,20 @@
           </svg>
         </div>
         <div class="status-row">
-          <div id="analogStatus">正在同步本地时间...</div>
+          <div id="analogStatus" data-i18n="analogLoading">正在同步本地时间...</div>
         </div>
       </article>
 
       <article class="clock-card glass">
         <div class="card-title">
           <div>
-            <h2>手表</h2>
-            <p>腕表风格时间组件，同时显示小型指针和电子时间。</p>
+            <h2 data-i18n="watchTitle">手表</h2>
+            <p data-i18n="watchDesc">腕表风格时间组件，同时显示小型指针和电子时间。</p>
           </div>
-          <span class="tag">Watch</span>
+          <span class="tag" data-i18n="watchTag">手表</span>
         </div>
         <div class="watch-area">
-          <div class="watch" aria-label="手表">
+          <div class="watch" aria-label="Watch">
             <div class="strap"></div>
             <div class="watch-face">
               <div id="watchHour" class="watch-hand watch-hour"></div>
@@ -643,20 +695,20 @@
           </div>
         </div>
         <div class="status-row">
-          <div id="watchStatus">腕表时间读取中...</div>
+          <div id="watchStatus" data-i18n="watchLoading">腕表时间读取中...</div>
         </div>
       </article>
 
       <article class="clock-card glass">
         <div class="card-title">
           <div>
-            <h2>日晷</h2>
-            <p>根据访问者当地时间生成太阳位置与影子方向的视觉化近似。</p>
+            <h2 data-i18n="sundialTitle">日晷</h2>
+            <p data-i18n="sundialDesc">根据访问者当地时间生成太阳位置与影子方向的视觉化近似。</p>
           </div>
-          <span class="tag">Sundial</span>
+          <span class="tag" data-i18n="sundialTag">日晷</span>
         </div>
         <div class="sundial-area">
-          <div class="sundial" aria-label="日晷">
+          <div class="sundial" aria-label="Sundial">
             <div class="sun-track"></div>
             <div id="sunDot" class="sun-dot"></div>
             <div id="dialShadow" class="dial-shadow"></div>
@@ -667,29 +719,157 @@
           </div>
         </div>
         <div class="status-row">
-          <div id="sunStatus">正在计算日晷影子...</div>
-          <div>注：这是基于本地时间的 UI 近似，不是精确天文日晷。</div>
+          <div id="sunStatus" data-i18n="sunLoading">正在计算日晷影子...</div>
+          <div data-i18n="sundialNote">注：这是基于本地时间的 UI 近似，不是精确天文日晷。</div>
         </div>
       </article>
     </section>
 
     <footer class="footer glass">
-      <div>Built for <strong>huol20.github.io</strong> · Pure HTML/CSS/JavaScript</div>
-      <div><a href="https://github.com/huol20/huol20.github.io">View repository</a></div>
+      <div data-i18n="footerLeft">为 huol20.github.io 构建 · 纯 HTML/CSS/JavaScript</div>
+      <div><a href="https://github.com/huol20/huol20.github.io" data-i18n="viewRepo">查看仓库</a></div>
     </footer>
   </main>
 
   <script>
     const $ = (id) => document.getElementById(id);
+
+    const translations = {
+      zh: {
+        htmlLang: "zh-CN",
+        locale: "zh-CN",
+        title: "访问者时间 | huol20",
+        description: "一个根据访问者所在时区实时显示当地时间的个人网站，包含数字钟、模拟钟、手表和日晷。",
+        languageLabel: "语言",
+        badge: "实时访问者时钟",
+        heroTitle: "此刻，你所在区域的时间",
+        heroLead: "页面会根据浏览器暴露的时区自动推断访问者所在区域，并同步展示数字钟、钟表、手表与日晷四种时间视图。",
+        privacyNote: "说明：区域信息来自浏览器时区，例如 Asia/Shanghai、America/Los_Angeles；不请求定位权限，也不会上传你的数据。",
+        digitalLabel: "数字钟",
+        loadingTime: "正在读取访问者时间...",
+        zoneLabel: "所在时区",
+        regionLabel: "推断区域",
+        utcLabel: "UTC 偏移",
+        localeLabel: "浏览器语言",
+        analogTitle: "钟表",
+        analogDesc: "传统模拟钟，时针、分针、秒针实时转动。",
+        analogTag: "模拟钟",
+        analogLoading: "正在同步本地时间...",
+        watchTitle: "手表",
+        watchDesc: "腕表风格时间组件，同时显示小型指针和电子时间。",
+        watchTag: "手表",
+        watchLoading: "腕表时间读取中...",
+        sundialTitle: "日晷",
+        sundialDesc: "根据访问者当地时间生成太阳位置与影子方向的视觉化近似。",
+        sundialTag: "日晷",
+        sunLoading: "正在计算日晷影子...",
+        sundialNote: "注：这是基于本地时间的 UI 近似，不是精确天文日晷。",
+        footerLeft: "为 huol20.github.io 构建 · 纯 HTML/CSS/JavaScript",
+        viewRepo: "查看仓库",
+        analogStatus: "当前指针时间：{time}",
+        watchStatus: "腕表同步时区：{zone}",
+        sundialNight: "当前接近夜间：日晷影子以低亮度展示。",
+        sundialMorning: "上午：太阳位置与晷针影子正在随本地时间变化。",
+        sundialNoon: "正午附近：太阳位置与晷针影子正在随本地时间变化。",
+        sundialAfternoon: "下午：太阳位置与晷针影子正在随本地时间变化。"
+      },
+      en: {
+        htmlLang: "en",
+        locale: "en-US",
+        title: "Visitor Time | huol20",
+        description: "A real-time visitor clock based on the visitor's browser time zone, featuring a digital clock, analog clock, watch, and sundial.",
+        languageLabel: "Language",
+        badge: "Real-time visitor clock",
+        heroTitle: "The time in your region, right now",
+        heroLead: "This page infers the visitor's region from the browser time zone and shows four synchronized views: a digital clock, an analog clock, a watch, and a sundial.",
+        privacyNote: "Note: the region comes from the browser time zone, such as Asia/Shanghai or America/Los_Angeles. No location permission is requested, and no visitor data is uploaded.",
+        digitalLabel: "Digital Clock",
+        loadingTime: "Reading visitor time...",
+        zoneLabel: "Time zone",
+        regionLabel: "Inferred region",
+        utcLabel: "UTC offset",
+        localeLabel: "Browser language",
+        analogTitle: "Analog Clock",
+        analogDesc: "A classic analog clock with live hour, minute, and second hands.",
+        analogTag: "Analog",
+        analogLoading: "Synchronizing local time...",
+        watchTitle: "Watch",
+        watchDesc: "A wristwatch-style component with small hands and a digital time readout.",
+        watchTag: "Watch",
+        watchLoading: "Reading watch time...",
+        sundialTitle: "Sundial",
+        sundialDesc: "A visual approximation of sun position and shadow direction based on the visitor's local time.",
+        sundialTag: "Sundial",
+        sunLoading: "Calculating sundial shadow...",
+        sundialNote: "Note: this is a UI approximation based on local time, not a precise astronomical sundial.",
+        footerLeft: "Built for huol20.github.io · Pure HTML/CSS/JavaScript",
+        viewRepo: "View repository",
+        analogStatus: "Current hand time: {time}",
+        watchStatus: "Watch synced to time zone: {zone}",
+        sundialNight: "Nighttime: the sundial shadow is shown with low brightness.",
+        sundialMorning: "Morning: the sun position and gnomon shadow are changing with local time.",
+        sundialNoon: "Near noon: the sun position and gnomon shadow are changing with local time.",
+        sundialAfternoon: "Afternoon: the sun position and gnomon shadow are changing with local time."
+      },
+      ru: {
+        htmlLang: "ru",
+        locale: "ru-RU",
+        title: "Время посетителя | huol20",
+        description: "Страница показывает местное время посетителя по часовому поясу браузера: цифровые часы, аналоговые часы, наручные часы и солнечные часы.",
+        languageLabel: "Язык",
+        badge: "Часы посетителя в реальном времени",
+        heroTitle: "Время в вашем регионе прямо сейчас",
+        heroLead: "Страница определяет регион по часовому поясу браузера и синхронно показывает четыре вида времени: цифровые часы, аналоговые часы, наручные часы и солнечные часы.",
+        privacyNote: "Примечание: регион берётся из часового пояса браузера, например Asia/Shanghai или America/Los_Angeles. Геолокация не запрашивается, данные посетителя не отправляются.",
+        digitalLabel: "Цифровые часы",
+        loadingTime: "Чтение времени посетителя...",
+        zoneLabel: "Часовой пояс",
+        regionLabel: "Предполагаемый регион",
+        utcLabel: "Смещение UTC",
+        localeLabel: "Язык браузера",
+        analogTitle: "Аналоговые часы",
+        analogDesc: "Классические аналоговые часы с движущимися часовой, минутной и секундной стрелками.",
+        analogTag: "Аналоговые",
+        analogLoading: "Синхронизация местного времени...",
+        watchTitle: "Наручные часы",
+        watchDesc: "Компонент в стиле наручных часов с маленькими стрелками и цифровым временем.",
+        watchTag: "Часы",
+        watchLoading: "Чтение времени часов...",
+        sundialTitle: "Солнечные часы",
+        sundialDesc: "Визуальное приближение положения солнца и направления тени по местному времени посетителя.",
+        sundialTag: "Солнечные",
+        sunLoading: "Расчёт тени солнечных часов...",
+        sundialNote: "Примечание: это визуальное приближение по местному времени, а не точные астрономические солнечные часы.",
+        footerLeft: "Создано для huol20.github.io · Чистый HTML/CSS/JavaScript",
+        viewRepo: "Открыть репозиторий",
+        analogStatus: "Текущее время стрелок: {time}",
+        watchStatus: "Часы синхронизированы с часовым поясом: {zone}",
+        sundialNight: "Ночь: тень солнечных часов показана с низкой яркостью.",
+        sundialMorning: "Утро: положение солнца и тень гномона меняются вместе с местным временем.",
+        sundialNoon: "Около полудня: положение солнца и тень гномона меняются вместе с местным временем.",
+        sundialAfternoon: "День: положение солнца и тень гномона меняются вместе с местным временем."
+      }
+    };
+
     const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC";
-    const locale = navigator.languages?.[0] || navigator.language || "zh-CN";
+    const browserLocale = navigator.languages?.[0] || navigator.language || "zh-CN";
+    let currentLang = localStorage.getItem("preferredLanguage") || "zh";
+
+    function t(key) {
+      return translations[currentLang]?.[key] || translations.zh[key] || key;
+    }
 
     function pad(num) {
       return String(num).padStart(2, "0");
     }
 
+    function interpolate(template, values) {
+      return template.replace(/\{(\w+)\}/g, (_, key) => values[key] ?? "");
+    }
+
     function buildTicks() {
       const ticks = $("ticks");
+      if (!ticks || ticks.childElementCount > 0) return;
       const numbers = ["12", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"];
 
       for (let i = 0; i < 60; i += 1) {
@@ -756,7 +936,7 @@
         const offset = parts.find(part => part.type === "timeZoneName")?.value;
         return offset ? offset.replace("GMT", "UTC") : "UTC";
       } catch (error) {
-        return "UTC offset unavailable";
+        return "UTC";
       }
     }
 
@@ -768,7 +948,30 @@
     }
 
     function setRotation(element, degrees) {
-      element.style.transform = `rotate(${degrees}deg)`;
+      if (element) element.style.transform = `rotate(${degrees}deg)`;
+    }
+
+    function setLanguage(lang, shouldPersist = true) {
+      currentLang = translations[lang] ? lang : "zh";
+      document.documentElement.lang = t("htmlLang");
+      document.title = t("title");
+      document.querySelector("meta[name='description']")?.setAttribute("content", t("description"));
+
+      document.querySelectorAll("[data-i18n]").forEach((element) => {
+        element.textContent = t(element.dataset.i18n);
+      });
+
+      document.querySelectorAll(".lang-btn").forEach((button) => {
+        const isActive = button.dataset.lang === currentLang;
+        button.classList.toggle("active", isActive);
+        button.setAttribute("aria-pressed", String(isActive));
+      });
+
+      if (shouldPersist) {
+        localStorage.setItem("preferredLanguage", currentLang);
+      }
+
+      update();
     }
 
     function updateSundial(hour, minute) {
@@ -783,7 +986,7 @@
         shadow.style.opacity = "0.16";
         shadow.style.width = "92px";
         shadow.style.transform = "rotate(180deg)";
-        sunStatus.textContent = "当前接近夜间：日晷影子以低亮度展示。";
+        sunStatus.textContent = t("sundialNight");
         return;
       }
 
@@ -800,8 +1003,8 @@
       shadow.style.width = `${shadowLength}px`;
       shadow.style.transform = `rotate(${shadowAngle}deg)`;
 
-      const period = decimalHour < 11 ? "上午" : decimalHour < 14 ? "正午附近" : "下午";
-      sunStatus.textContent = `${period}：太阳位置与晷针影子正在随本地时间变化。`;
+      const statusKey = decimalHour < 11 ? "sundialMorning" : decimalHour < 14 ? "sundialNoon" : "sundialAfternoon";
+      sunStatus.textContent = t(statusKey);
     }
 
     function update() {
@@ -810,8 +1013,9 @@
       const secondDeg = (second + millisecond / 1000) * 6;
       const minuteDeg = (minute + second / 60) * 6;
       const hourDeg = ((hour % 12) + minute / 60 + second / 3600) * 30;
+      const timeText = `${pad(hour)}:${pad(minute)}:${pad(second)}`;
 
-      const dateText = new Intl.DateTimeFormat(locale, {
+      const dateText = new Intl.DateTimeFormat(t("locale"), {
         timeZone,
         weekday: "long",
         year: "numeric",
@@ -819,11 +1023,11 @@
         day: "numeric"
       }).format(now);
 
-      $("digitalTime").textContent = `${pad(hour)}:${pad(minute)}:${pad(second)}`;
+      $("digitalTime").textContent = timeText;
       $("digitalDate").textContent = dateText;
-      $("analogStatus").textContent = `当前指针时间：${pad(hour)}:${pad(minute)}:${pad(second)}`;
+      $("analogStatus").textContent = interpolate(t("analogStatus"), { time: timeText });
       $("watchDigital").textContent = `${pad(hour)}:${pad(minute)}`;
-      $("watchStatus").textContent = `腕表同步时区：${timeZone}`;
+      $("watchStatus").textContent = interpolate(t("watchStatus"), { zone: timeZone });
 
       setRotation($("hourHand"), hourDeg);
       setRotation($("minuteHand"), minuteDeg);
@@ -839,8 +1043,13 @@
       $("zoneName").textContent = timeZone;
       $("regionName").textContent = formatRegion(timeZone);
       $("utcOffset").textContent = getOffset(new Date());
-      $("localeName").textContent = locale;
-      update();
+      $("localeName").textContent = browserLocale;
+
+      document.querySelectorAll(".lang-btn").forEach((button) => {
+        button.addEventListener("click", () => setLanguage(button.dataset.lang));
+      });
+
+      setLanguage(currentLang, false);
       window.setInterval(update, 250);
     }
 
